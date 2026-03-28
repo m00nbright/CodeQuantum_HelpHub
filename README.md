@@ -1,4 +1,5 @@
 # CodeQuantum_HelpHub
-An application to help low-income families find basic resources
-
 Made by Moniqueh, Indrani, Ryzen, Yahaira
+
+This application helps with low income people finding resources near them base on county, hosuing, food, emplyment and health.
+by searching it gives the result base on the data on hand.
