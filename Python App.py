@@ -60,6 +60,22 @@ class ApplicationUI:
         # Create and pack the clear button
         ttk.Button(button_frame, text="Clear", 
                   command=self.on_clear).pack(side="left", padx=5)
+        
+        # Create checklist section
+        checklist_frame = ttk.Frame(root)
+        # Pack the checklist frame with padding and fill horizontally
+        checklist_frame.pack(pady=20, padx=20, fill="x")
+        
+        # Header for checklist
+        ttk.Label(checklist_frame, text="Resources Needed", font=("Times New Roman", 16, "bold")).pack(pady=10)
+        
+        # Create checkbutton variables and widgets
+        self.check_vars = []
+        options = ["Housing", "Employment", "Health", "Food"]
+        for option in options:
+            var = tk.BooleanVar()
+            self.check_vars.append(var)
+            ttk.Checkbutton(checklist_frame, text=option, variable=var).pack(anchor="w", padx=20)
     
     # Define the method to handle submit button click
     def on_submit(self):
@@ -74,6 +90,9 @@ class ApplicationUI:
         self.name_entry.delete(0, "end")
         # Clear the salary combobox selection
         self.salary_combo.set('')
+        # Reset all checklist options
+        for var in self.check_vars:
+            var.set(False)
 
 # Check if this script is being run as the main module
 if __name__ == "__main__":
