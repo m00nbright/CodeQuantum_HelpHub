@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import csv
+import os
 import tkinter.messagebox as messagebox
 
 # Define the main application UI class
@@ -76,7 +77,10 @@ class ApplicationUI:
         self.counties = []
         current_county = None
         try:
-            with open('Book1.csv', 'r') as f:
+            # Get the directory of the current script
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            csv_path = os.path.join(script_dir, 'Book1.csv')
+            with open(csv_path, 'r') as f:
                 reader = csv.reader(f)
                 next(reader)  # Skip header
                 for row in reader:
