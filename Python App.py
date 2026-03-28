@@ -29,6 +29,11 @@ class ApplicationUI:
         # Pack the header with vertical padding
         header.pack(pady=20)
         
+        # Add goal description
+        description = ttk.Label(root, text="Helping low-income families locate essential resources", font=("Times New Roman", 11))
+        # Pack the description with padding
+        description.pack(pady=10)
+        
         # Create a frame for the county input section
         input_frame = ttk.Frame(root)
         # Pack the input frame with padding and fill horizontally
