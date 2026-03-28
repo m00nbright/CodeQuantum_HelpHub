@@ -48,18 +48,7 @@ class ApplicationUI:
         self.salary_combo = ttk.Combobox(input_frame, values=salary_ranges, state="readonly", width=27)
         # Pack the combobox widget
         self.salary_combo.pack(side="left", padx=5)
-        
-        # Create a frame for the buttons
-        button_frame = ttk.Frame(root)
-        # Pack the button frame with vertical padding
-        button_frame.pack(pady=20)
-        
-        # Create and pack the search button
-        ttk.Button(button_frame, text="Search",
-                  command=self.on_submit).pack(side="left", padx=5)
-        # Create and pack the clear button
-        ttk.Button(button_frame, text="Clear", 
-                  command=self.on_clear).pack(side="left", padx=5)
+
         
         # Create checklist section
         checklist_frame = ttk.Frame(root)
@@ -67,7 +56,7 @@ class ApplicationUI:
         checklist_frame.pack(pady=20, padx=20, fill="x")
         
         # Header for checklist
-        ttk.Label(checklist_frame, text="Resources Needed", font=("Times New Roman", 16, "bold")).pack(pady=10)
+        ttk.Label(checklist_frame, text="Resources Needed", font=("Times New Roman", 16)).pack(pady=10)
         
         # Create checkbutton variables and widgets
         self.check_vars = []
@@ -75,7 +64,20 @@ class ApplicationUI:
         for option in options:
             var = tk.BooleanVar()
             self.check_vars.append(var)
-            ttk.Checkbutton(checklist_frame, text=option, variable=var).pack(anchor="w", padx=20)
+            ttk.Checkbutton(checklist_frame, text=option, variable=var, command=self.update_buttons).pack(anchor="w", padx=20)
+
+        # Create a frame for the buttons (initially hidden)
+        self.button_frame = ttk.Frame(root)
+        # Do not pack initially
+        
+
+
+        # Create and pack the search button
+        ttk.Button(self.button_frame, text="Search",
+                  command=self.on_submit).pack(side="left", padx=5)
+        # Create and pack the clear button
+        ttk.Button(self.button_frame, text="Clear", 
+                  command=self.on_clear).pack(side="left", padx=5)
     
     # Define the method to handle submit button click
     def on_submit(self):
@@ -93,6 +95,16 @@ class ApplicationUI:
         # Reset all checklist options
         for var in self.check_vars:
             var.set(False)
+        # Hide the buttons
+        self.button_frame.pack_forget()
+    
+    # Define the method to update button visibility
+    def update_buttons(self):
+        # Show buttons if any checklist option is checked
+        if any(var.get() for var in self.check_vars):
+            self.button_frame.pack(pady=20)
+        else:
+            self.button_frame.pack_forget()
 
 # Check if this script is being run as the main module
 if __name__ == "__main__":
