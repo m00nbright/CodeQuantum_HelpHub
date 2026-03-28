@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
+import csv
+import tkinter.messagebox as messagebox
 
 # Define the main application UI class
 class ApplicationUI:
@@ -12,7 +14,16 @@ class ApplicationUI:
         # Set the window geometry (size)
         self.root.geometry("500x400")
         
-        # Create the header label with title text
+        # Load the dataset
+        self.load_data()
+        
+        # Define keywords for resource matching
+        self.resource_keywords = {
+            "Housing": ["housing", "shelter", "residential"],
+            "Employment": ["employment", "vocational", "rehabilitation"],
+            "Health": ["health", "medical", "care", "hospital", "physician", "dentist", "nursing"],
+            "Food": ["food", "nutrition", "relief", "emergency"]
+        }
         header = ttk.Label(root, text="HELP HUB", font=("Times New Roman", 20, "bold"))
         # Pack the header with vertical padding
         header.pack(pady=20)
@@ -60,8 +71,8 @@ class ApplicationUI:
         
         # Create checkbutton variables and widgets
         self.check_vars = []
-        options = ["Housing", "Employment", "Health", "Food"]
-        for option in options:
+        self.options = ["Housing", "Employment", "Health", "Food"]
+        for option in self.options:
             var = tk.BooleanVar()
             self.check_vars.append(var)
             ttk.Checkbutton(checklist_frame, text=option, variable=var, command=self.update_buttons).pack(anchor="w", padx=20)
@@ -79,12 +90,56 @@ class ApplicationUI:
         ttk.Button(self.button_frame, text="Clear", 
                   command=self.on_clear).pack(side="left", padx=5)
     
+    # Define the method to load data from CSV
+    def load_data(self):
+        self.data = {}
+        current_county = None
+        try:
+            with open('Book1.csv', 'r') as f:
+                reader = csv.reader(f)
+                next(reader)  # Skip header
+                for row in reader:
+                    if len(row) >= 2:
+                        label, count_str = row[0], row[1]
+                        if 'County' in label and count_str.isdigit():
+                            current_county = label
+                            self.data[current_county] = []
+                        elif current_county and count_str.isdigit():
+                            self.data[current_county].append((label, int(count_str)))
+        except FileNotFoundError:
+            messagebox.showerror("Error", "Book1.csv not found.")
+    
     # Define the method to handle submit button click
     def on_submit(self):
         # Get the text from the county entry
-        name = self.name_entry.get()
+        county = self.name_entry.get().strip()
         # Get the selected value from the salary combobox
         salary = self.salary_combo.get()
+        # Get selected resources
+        selected = [option for option, var in zip(self.options, self.check_vars) if var.get()]
+        
+        if not county:
+            messagebox.showwarning("Input Error", "Please enter a county.")
+            return
+        
+        if not selected:
+            messagebox.showwarning("Input Error", "Please select at least one resource.")
+            return
+        
+        if county not in self.data:
+            messagebox.showerror("County Not Found", f"The county '{county}' is not in the database.")
+            return
+        
+        # Find matching services
+        results = []
+        for service, count in self.data[county]:
+            if any(any(kw in service.lower() for kw in self.resource_keywords[res]) for res in selected):
+                results.append(f"{service}: {count}")
+        
+        if results:
+            messagebox.showinfo("Matching Resources", "\n".join(results))
+        else:
+            messagebox.showinfo("No Matches", "No matching resources found for the selected options.")
     
     # Define the method to handle clear button click
     def on_clear(self):
