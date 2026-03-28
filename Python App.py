@@ -35,30 +35,10 @@ class ApplicationUI:
         
         # Create and pack the label for county input
         ttk.Label(input_frame, text="County:").pack(side="left", padx=5)
-        # Create the entry widget for county input
-        self.name_entry = ttk.Entry(input_frame, width=30)
-        # Pack the entry widget
-        self.name_entry.pack(side="left", padx=5)
-
-        # Create another frame for the salary range input section
-        input_frame = ttk.Frame(root)
-        # Pack the input frame with padding and fill horizontally
-        input_frame.pack(pady=10, padx=20, fill="x")
-        
-        # Create and pack the label for salary range input
-        ttk.Label(input_frame, text="Salary Range:").pack(side="left", padx=5)
-        # Define the list of salary ranges for the dropdown
-        salary_ranges = [
-            "Under $25,000",
-            "$25,000 - $49,999",
-            "$50,000 - $74,999",
-            "$75,000 - $99,999",
-            "$100,000 and above"
-        ]
-        # Create the combobox widget for salary range selection
-        self.salary_combo = ttk.Combobox(input_frame, values=salary_ranges, state="readonly", width=27)
+        # Create the combobox widget for county selection
+        self.county_combo = ttk.Combobox(input_frame, values=self.counties, state="readonly", width=27)
         # Pack the combobox widget
-        self.salary_combo.pack(side="left", padx=5)
+        self.county_combo.pack(side="left", padx=5)
 
         
         # Create checklist section
@@ -93,6 +73,7 @@ class ApplicationUI:
     # Define the method to load data from CSV
     def load_data(self):
         self.data = {}
+        self.counties = []
         current_county = None
         try:
             with open('Book1.csv', 'r') as f:
@@ -104,6 +85,7 @@ class ApplicationUI:
                         if 'County' in label and count_str.isdigit():
                             current_county = label
                             self.data[current_county] = []
+                            self.counties.append(current_county)
                         elif current_county and count_str.isdigit():
                             self.data[current_county].append((label, int(count_str)))
         except FileNotFoundError:
@@ -111,10 +93,8 @@ class ApplicationUI:
     
     # Define the method to handle submit button click
     def on_submit(self):
-        # Get the text from the county entry
-        county = self.name_entry.get().strip()
-        # Get the selected value from the salary combobox
-        salary = self.salary_combo.get()
+        # Get the selected county
+        county = self.county_combo.get()
         # Get selected resources
         selected = [option for option, var in zip(self.options, self.check_vars) if var.get()]
         
@@ -143,13 +123,13 @@ class ApplicationUI:
     
     # Define the method to handle clear button click
     def on_clear(self):
-        # Clear the county entry field
-        self.name_entry.delete(0, "end")
-        # Clear the salary combobox selection
-        self.salary_combo.set('')
+        # Clear the county combobox selection
+        self.county_combo.set('')
         # Reset all checklist options
         for var in self.check_vars:
             var.set(False)
+        # Reset show all
+        self.show_all_var.set(False)
         # Hide the buttons
         self.button_frame.pack_forget()
     
