@@ -119,14 +119,23 @@ class ApplicationUI:
             messagebox.showerror("County Not Found", f"The county '{county}' is not in the database.")
             return
         
-        # Find matching services
-        results = []
+        # Find matching services grouped by resource
+        results = {res: [] for res in selected}
         for service, count in self.data[county]:
-            if any(any(kw in service.lower() for kw in self.resource_keywords[res]) for res in selected):
-                results.append(f"{service}: {count}")
+            for res in selected:
+                if any(kw in service.lower() for kw in self.resource_keywords[res]):
+                    results[res].append(f"{service}: {count}")
+                    break  # Assign to first matching resource to avoid duplicates
         
-        if results:
-            messagebox.showinfo("Matching Resources", "\n".join(results))
+        if any(results.values()):
+            # Build organized output
+            output = ""
+            for res in selected:
+                if results[res]:
+                    results[res].sort(key=lambda x: int(x.split(': ')[1]), reverse=True)
+                    output += f"{res}:\n"
+                    output += "\n".join(f"  - {item}" for item in results[res]) + "\n\n"
+            self.show_results("Matching Resources", output.strip())
         else:
             messagebox.showinfo("No Matches", "No matching resources found for the selected options.")
     
@@ -139,6 +148,32 @@ class ApplicationUI:
             var.set(False)
         # Hide the buttons
         self.button_frame.pack_forget()
+    
+    # Define the method to show results in a custom dialog with bold headers
+    def show_results(self, title, content):
+        dialog = tk.Toplevel(self.root)
+        dialog.title(title)
+        dialog.geometry("600x400")
+        
+        text = tk.Text(dialog, wrap="word", font=("Arial", 10))
+        text.pack(expand=True, fill="both", padx=10, pady=10)
+        
+        # Configure bold tag for headers
+        text.tag_configure("bold", font=("Arial", 10, "bold"))
+        
+        # Insert content with bold for resource headers
+        lines = content.split('\n')
+        for line in lines:
+            if line.strip().endswith(':'):
+                text.insert("end", line + '\n', "bold")
+            else:
+                text.insert("end", line + '\n')
+        
+        text.config(state="disabled")
+        
+        # Add close button
+        button = ttk.Button(dialog, text="Close", command=dialog.destroy)
+        button.pack(pady=10)
     
     # Define the method to update button visibility
     def update_buttons(self):
