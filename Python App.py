@@ -7,16 +7,16 @@ class ApplicationUI:
         self.root.title("Application")
         self.root.geometry("500x400")
         
-        # Header
-        header = ttk.Label(root, text="Welcome to My Application", 
-                          font=("Arial", 16, "bold"))
+        # Title 
+        header = ttk.Label(root, text="HELP HUB", 
+                          font=("Times New Roman", 20, "bold"))
         header.pack(pady=20)
         
-        # Input frame
+        # Input
         input_frame = ttk.Frame(root)
         input_frame.pack(pady=10, padx=20, fill="x")
         
-        ttk.Label(input_frame, text="Name:").pack(side="left", padx=5)
+        ttk.Label(input_frame, text="County:").pack(side="left", padx=5)
         self.name_entry = ttk.Entry(input_frame, width=30)
         self.name_entry.pack(side="left", padx=5)
         
