@@ -60,11 +60,6 @@ class ApplicationUI:
         # Create and pack the clear button
         ttk.Button(button_frame, text="Clear", 
                   command=self.on_clear).pack(side="left", padx=5)
-        
-        # Create the output text area widget
-        self.output_text = tk.Text(root, height=10, width=50)
-        # Pack the text area with padding and expand to fill space
-        self.output_text.pack(pady=5, padx=10, fill="both", expand=True)
     
     # Define the method to handle submit button click
     def on_submit(self):
@@ -72,8 +67,6 @@ class ApplicationUI:
         name = self.name_entry.get()
         # Get the selected value from the salary combobox
         salary = self.salary_combo.get()
-        # Insert the formatted output into the text area
-        self.output_text.insert("end", f"Hello, {name}! Selected salary range: {salary}\n")
     
     # Define the method to handle clear button click
     def on_clear(self):
@@ -81,8 +74,6 @@ class ApplicationUI:
         self.name_entry.delete(0, "end")
         # Clear the salary combobox selection
         self.salary_combo.set('')
-        # Clear the output text area
-        self.output_text.delete("1.0", "end")
 
 # Check if this script is being run as the main module
 if __name__ == "__main__":
