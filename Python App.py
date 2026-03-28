@@ -132,8 +132,6 @@ class ApplicationUI:
         # Reset all checklist options
         for var in self.check_vars:
             var.set(False)
-        # Reset show all
-        self.show_all_var.set(False)
         # Hide the buttons
         self.button_frame.pack_forget()
     
