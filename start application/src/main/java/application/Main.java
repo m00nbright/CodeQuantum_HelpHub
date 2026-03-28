@@ -11,7 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafc.scene.layout.VBox;
 import javafx.scene.layout.*
-import javafx
+
 
 
 
@@ -19,7 +19,12 @@ public class Main extends Application {
     Label lblHomeTitle = new Label("Welcome to Help Hub!");
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage stage) throws IOException {
 
         VBox vbHomePage = new VBox(10, lblHomeTitle);
         vbHomePage.setAlignment(Pos.CENTER);
